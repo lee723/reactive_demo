@@ -1,7 +1,7 @@
 package com.cmit.lee.reactive;
 
 /**
- * 订阅者，消息接收者<br/>
+ * 发布者，消息发布者<br/>
  *
  * @author liyuanchang
  * @version V1.0

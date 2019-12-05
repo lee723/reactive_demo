@@ -12,6 +12,8 @@ public class ClientMain {
     public static void main(String[] args) {
         Publisher.create(() -> {
            return HttpManager.getData("world");
+        }).map(v -> {
+            return AccountHelper.process(v);
         }).subscribe(new Subscriber<String>() {
             @Override
             public void onNext(String value) {
