@@ -1,5 +1,7 @@
 package com.cmit.lee.reactor;
 
+import javax.sound.midi.Soundbank;
+
 /**
  * <br/>
  *
@@ -10,35 +12,33 @@ package com.cmit.lee.reactor;
  */
 public class ClientMain {
     public static void main(String[] args) {
-        Publicsher<String> publicsher = DefaultPublisher.create(() -> HttpManager.getData("world"));
-        DefaultMiddler<String, String> processStep = DefaultMiddler.create(AccountHelper::process);
-        DefaultMiddler<String, Integer> insertStep = DefaultMiddler.create(DBHelper::insert);
+        Driver driver = new Driver();
 
-        // 构建链式关系
-        publicsher.subscribe(processStep);
-        processStep.subscribe(insertStep);
-        insertStep.subscribe(new Subscriber<Integer>() {
-            @Override
-            public void onNext(Integer value) {
-                if (value == 1) {
-                    System.out.println("数据插入成功");
-                } else {
-                    System.out.println("数据插入失败");
-                }
-            }
+        driver.createPublisher(() -> HttpManager.getData("world"))
+                .addLast(DefaultMiddler.create(AccountHelper::process))
+                .addLast(DefaultMiddler.create(DBHelper::insert))
+                .addLast(new Subscriber<Integer>() {
+                    @Override
+                    public void onNext(Integer value) {
+                        if (value == 1) {
+                            System.out.println("数据插入成功！");
+                        } else {
+                            System.out.println("数据插入失败!");
+                        }
+                    }
 
-            @Override
-            public void onCompleted() {
-                System.out.println("任务完成");
-            }
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("任务成功");
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println("任务失败，失败原因: " + e.getMessage());
+                    }
+                });
 
-            }
-        });
-
-        // 触发数据流动
-        publicsher.publish();
+        // 发布消息
+        driver.publish();
     }
 }
