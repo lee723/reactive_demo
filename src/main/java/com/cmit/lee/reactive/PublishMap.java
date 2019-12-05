@@ -10,7 +10,7 @@ import java.util.function.Function;
  * @email liyuanchang@chinamobile.com
  * @date 2019/12/4 15:11
  */
-public class PublishMap<T, U> implements PublishSource<U> {
+public class PublishMap<T, U> extends Publisher<U> implements PublishSource<U> {
     /** 上游发布者 */
     PublishSource<T> upstream;
     Function<T, U> mapper;

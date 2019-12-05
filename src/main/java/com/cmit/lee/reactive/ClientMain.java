@@ -14,10 +14,16 @@ public class ClientMain {
            return HttpManager.getData("world");
         }).map(v -> {
             return AccountHelper.process(v);
-        }).subscribe(new Subscriber<String>() {
+        }).map(v -> {
+            return DBHelper.insert(v);
+        }).subscribe(new Subscriber<Integer>() {
             @Override
-            public void onNext(String value) {
-                DBHelper.insert(value);
+            public void onNext(Integer value) {
+                if (value == 1) {
+                    System.out.println("插入数据库成功");
+                } else {
+                    System.out.println("插入数据库失败");
+                }
             }
 
             @Override

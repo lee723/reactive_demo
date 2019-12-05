@@ -14,6 +14,8 @@ import java.util.function.Supplier;
 public class Publisher<T> implements PublishSource<T> {
     Supplier<T> datasoure;
 
+    Publisher() {}
+
     private Publisher(Supplier<T> supplier) {
         this.datasoure = supplier;
     }
@@ -41,7 +43,7 @@ public class Publisher<T> implements PublishSource<T> {
      * @param <R>
      * @return
      */
-    public <R> PublishSource<R> map(Function<T, R> mapper) {
+    public <R> Publisher<R> map(Function<T, R> mapper) {
         // 构建一个PublishSource，供下游订阅，this为上游的PublishSource实例
         PublishMap publishMap = new PublishMap<>(this, mapper);
         return publishMap;
