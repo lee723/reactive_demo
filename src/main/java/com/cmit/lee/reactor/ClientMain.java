@@ -15,9 +15,9 @@ public class ClientMain {
         Driver driver = new Driver();
 
         driver.createPublisher(() -> HttpManager.getData("world"))
-                .addLast(DefaultMiddler.create(AccountHelper::process))
-                .addLast(DefaultMiddler.create(DBHelper::insert))
-                .addLast(new Subscriber<Integer>() {
+                .addMiddleOperation(DefaultMiddler.create(AccountHelper::process))
+                .addMiddleOperation(DefaultMiddler.create(DBHelper::insert))
+                .addSubscriberAndPublish(new Subscriber<Integer>() {
                     @Override
                     public void onNext(Integer value) {
                         if (value == 1) {
@@ -37,8 +37,5 @@ public class ClientMain {
                         System.out.println("任务失败，失败原因: " + e.getMessage());
                     }
                 });
-
-        // 发布消息
-        driver.publish();
     }
 }

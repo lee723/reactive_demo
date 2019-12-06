@@ -20,16 +20,18 @@ public class Driver {
         return this;
     }
 
-    public Driver addLast(Subscriber subscriber) {
-        this.tail.subscribe(subscriber);
-        // 当订阅者是中间操作时，需要将尾部后移
-        if (subscriber instanceof DefaultMiddler) {
-            this.tail = (Publicsher) subscriber;
-        }
+    public Driver addMiddleOperation(DefaultMiddler middler) {
+        this.tail.subscribe(middler);
+        this.tail = (Publicsher) middler;
         return this;
     }
 
-    public void publish() {
+    public void addSubscriberAndPublish(Subscriber subscriber) {
+        this.tail.subscribe(subscriber);
+        this.publish();
+    }
+
+    private void publish() {
         this.publisher.publish();
     }
 }
